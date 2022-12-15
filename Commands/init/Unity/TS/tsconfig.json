@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "module": "ESNext",
+        "jsx": "preserve",
+        "experimentalDecorators": true,
+        "esModuleInterop":true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "../Assets/Puerts/Typing",
+            "../Assets/Gen/Typing"
+        ]
+    },
+    "inclde":[
+        "./src/*.ts"
+    ]
+}

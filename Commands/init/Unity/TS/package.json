@@ -1,0 +1,14 @@
+{
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "test": "echo 'Hello'"
+    },
+    "dependencies": {
+        "source-map-support": "^0.5.21",
+        "typeof2": "^1.0.4"
+    },
+    "devDependencies": {
+        "@types/node": "^18.11.13"
+    }
+}
