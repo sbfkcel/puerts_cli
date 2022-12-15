@@ -8,6 +8,7 @@ import getWorkDir from './getWorkDir.js';
 import getConfig from './getConfig.js';
 import createLang from '../lib/createLang.js';
 import getPathInfo from '../lib/getPathInfo.js';
+import adaptPath from '../lib/adaptPath.js';
 
 const lang = createLang({
     version:{
@@ -67,7 +68,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
         return;
     };
 
-    const entry = (await import(entryPath)).default;                                                // 得到入口方法
+    const entry = (await import(adaptPath(entryPath))).default;                                     // 得到入口方法
     if(typeof entry !== 'function'){
         console.log(lang('notFunction'));
         return;

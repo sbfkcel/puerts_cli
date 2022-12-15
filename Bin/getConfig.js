@@ -2,6 +2,7 @@ import path from 'node:path';
 import getPathInfo from '../lib/getPathInfo.js';
 import createLang from '../lib/createLang.js';
 import findPath from '../lib/findPath.js';
+import adaptPath from '../lib/adaptPath.js';
 
 const lang = createLang({
     msg:{
@@ -25,7 +26,7 @@ const getConfig = async(workDir)=>{
     if(configPath === undefined){
         return {msg:lang('msg')}
     };
-    const config = (await import(configPath)).default;
+    const config = (await import(adaptPath(configPath))).default;
     const dir = path.dirname(configPath);
     for(let key in config){                                                                         // 将相对路径处理成绝对路径，方便后续处理
         let item = config[key];

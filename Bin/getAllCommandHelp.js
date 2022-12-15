@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import alignString from '../lib/alignString.js';
 import getPathInfo from '../lib/getPathInfo.js';
 import createLang from '../lib/createLang.js';
+import adaptPath from '../lib/adaptPath.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const commandsDir = path.join(__dirname,'..','Commands');
@@ -22,7 +23,7 @@ const getAllCommandHelp = async ()=>{
         const itemHelpPath = path.join(commandsDir,item,'help.js');
         const itemHelpPathInfo = getPathInfo(itemHelpPath);
         if(itemHelpPathInfo.type === 'file'){
-            const itemHelp = (await import(itemHelpPath)).default;
+            const itemHelp = (await import(adaptPath(itemHelpPath))).default;
             const desLang = createLang({des:itemHelp.des});
             result += `    ${alignString(item,10)} ${desLang('des')}\n`;
         };

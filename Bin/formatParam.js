@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import helpToString from './helpToString.js';
 import createLang from '../lib/createLang.js';
 import getAllCommandHelp from './getAllCommandHelp.js';
+import adaptPath from '../lib/adaptPath.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
@@ -56,7 +57,7 @@ const formatParam = async (command,params)=>{
     const helpPath = path.join(__dirname,'..','Commands',command,'help.js');
     let helpObj;
     try {
-        helpObj = (await import(helpPath)).default
+        helpObj = (await import(adaptPath(helpPath))).default
     } catch (error) {
         const allCommandHelp = await getAllCommandHelp();
         return `'${command}' ${lang('invalidCommand')}\n\n${allCommandHelp}`;
