@@ -13,7 +13,7 @@
 
 ## 安装
 
-确保本地已经安装 [Node.js 15.15.0+](https://nodejs.org/en/)
+确保本地已经安装 [Node.js 16.15.0+](https://nodejs.org/en/)
 
 ```bash
 # 使用npm安装
