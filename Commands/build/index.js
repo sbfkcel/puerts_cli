@@ -1,5 +1,6 @@
 import path from 'node:path';
 import fs from 'fs-extra';
+import { spawnSync } from 'node:child_process';
 import buildForBrowser from "./buildForBrowser.js";
 import buildForMinigame from "./buildForMinigame.js";
 import buildForApp from './buildForApp.js';

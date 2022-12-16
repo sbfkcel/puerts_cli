@@ -1,10 +1,14 @@
 {
   "name": "@puerts/cli",
-  "version": "0.1.8",
+  "version": "0.1.10",
   "type": "module",
   "author":"sbfkcel@163.com",
   "keywords": ["puerts","puerts cli","unity","typescript","unity js"],
   "description": "PureTS is a quick scaffold tool, which can be used in the project.",
+  "engines": {
+    "node":">=16.15.0",
+    "npm":">=8.5.5"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sbfkcel/puerts_cli.git"
