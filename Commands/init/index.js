@@ -61,7 +61,7 @@ const init = async(argObj)=>{
         console.log(lang('install'));
         const srcNodeModules = path.join(puerConfig.tsProjectDir,'node_modules');
         fs.ensureDirSync(srcNodeModules);
-        spawnSync('npm',['install','--prefix',puerConfig.tsProjectDir]);
+        spawnSync('npm',['install'],{cwd:puerConfig.tsProjectDir,shell:true});
         fs.createSymlinkSync(srcNodeModules,path.join(puerConfig.tsOutputDir,'node_modules'));
     } catch (error) {
         console.log(lang('installFailed'));
