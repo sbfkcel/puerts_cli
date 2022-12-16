@@ -46,16 +46,21 @@ puer build -h
 - 在项目中添加 `Puerts`
     - [下载 Puerts](https://github.com/Tencent/puerts/tags)
     - 解压并将 `Puerts` 目录复制到项目的 `Assets/` 目录下，即：`Assets/Puerts/`
-- 在项目中添加 `PuertsWebGL`（无需支持 Web、微信小游戏可以不用）
+    - 注意：由于 `Puerts` 支持多系统多平台，需要手动指定好哪些文件适用于哪些平台，否则可能运行或编译出现异常，具体操作方法如下：
+        - UnityEditor的资源管理器中找到: `Assets` -> `Puerts` -> `Plugins` -> `xx系统` -> `xx` 直到具体的文件，选中目录下所有文件
+        - 然后在 `Inspector` 面板勾选对上的平台并点击 `Apply` 按钮（如果不知道则全都不选就好，之后等需要编译对应平台的时候再来这里设置）
+        - 设置完之后，建议关掉 UnityEditor 重开一次
     - [下载 PuertsWebGL](https://github.com/zombieyang/puerts_unity_webgl_demo/tags) 并解压
     - 在解压目录内找到 `package` 目录并重命名为 `PuertsWebGL`
     - 将重命名好的 `PuertsWebGL` 目录复制到项目的 `Assets/` 目录下，即：`Assets/PuertsWebGL/`
-- 在项目中添加 `微信小游戏转换工具`（无需支持 Web、微信小游戏可以不用）
+- 在项目中添加 `微信小游戏转换工具`（无需支持 Web、微信小游戏可以忽略）
     - [下载微信小游戏转换工具Unity插件](https://game.weixin.qq.com/cgi-bin/gamewxagwasmsplitwap/getunityplugininfo?download=1)
     - 双击 `minigame.xxx.unitypackage` 将插件导入到项目
-- 初始化一个 `Puerts` 项目
+- 初始化 `Puerts` 项目
     - 终端进入到创建好的 `Unity项目` 目录中
     - 终端执行 `puer init` 初始化一个 `Puerts` 项目
+ - 将项目色彩空间改为 `Gamma`（无需支持 Web、微信小游戏可以忽略）
+    - UnityEditor菜单 -> `Editor` -> `Project Settings` -> `Player` -> `Other Settings` -> `Color Space` -> `Gamma`
 - 允许不安全代码（Blittables 需要用到）
     - UnityEditor菜单 -> `Editor` -> `Project Settings` -> `Player` -> `Other Settings` -> `Allow 'unsafe' Code`
 - 使用 `Puerts` 生成关联 `Code`
@@ -78,8 +83,6 @@ puer build -h
 
 - 导出 Web 或 微信小游戏工程
     - 确保 UnityEditor 有安装 Unity-WebGL-Support
-    - 将项目色彩空间改为 `Gamma`
-        - UnityEditor菜单 -> `Editor` -> `Project Settings` -> `Player` -> `Other Settings` -> `Color Space` -> `Gamma`
     - 确保项目已经有安装 `PuertsWebGL`、`微信小游戏转换工具`
     - UnityEditor菜单 `微信小游戏` -> `转换小游戏` 在弹出的转换窗口中填写以下信息
         - 游戏appid，[在微信公众平台中申请](https://mp.weixin.qq.com/)
