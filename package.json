@@ -1,6 +1,6 @@
 {
   "name": "@puerts/cli",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "type": "module",
   "author":"sbfkcel@163.com",
   "keywords": ["puerts","puerts cli","unity","typescript","unity js"],

@@ -59,11 +59,10 @@ const init = async(argObj)=>{
     console.log(line);
     try {                                                                                           // 尝试安装依赖并创建 node_modules 目录软链
         console.log(lang('install'));
+        const srcNodeModules = path.join(puerConfig.tsProjectDir,'node_modules');
+        fs.ensureDirSync(srcNodeModules);
         spawnSync('npm',['install','--prefix',puerConfig.tsProjectDir]);
-        fs.createSymlinkSync(
-            path.join(puerConfig.tsProjectDir,'node_modules'),
-            path.join(puerConfig.tsOutputDir,'node_modules')
-        );
+        fs.createSymlinkSync(srcNodeModules,path.join(puerConfig.tsOutputDir,'node_modules'));
     } catch (error) {
         console.log(lang('installFailed'));
     };
