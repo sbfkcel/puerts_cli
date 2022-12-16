@@ -5,6 +5,7 @@ import buildForMinigame from "./buildForMinigame.js";
 import buildForApp from './buildForApp.js';
 import introduceRes from './introduceRes.js';
 import createServer from '../../lib/createServer.js';
+import createLang from '../../lib/createLang.js';
 
 const lang = createLang({
     install:{
