@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import dgram from 'node:dgram';
 import getPathInfo from '../../lib/getPathInfo.js';
 import isTsAndJs from '../../lib/isTsAndJs.js';
 import buildFile from '../../lib/buildFile.js';
@@ -17,9 +18,12 @@ const langObj = {
         en:'The TS file monitoring has been turned on, and now modifying the project file will automatically complete the compilation'
     }
 };
+
 const dev = (argObj)=>{
-    const {config} = argObj;
+    const {config,param} = argObj;
+    console.log(argObj);
     const option = {recursive:true};
+    const client = param && param.reload && param.reload.at(-1) ? dgram.createSocket("udp4") : null;
     const fun = (eventType, fileName)=>{
         const filePath = path.join(config.tsProjectSrcDir,fileName),
             filePathInfo = getPathInfo(filePath);
@@ -31,6 +35,9 @@ const dev = (argObj)=>{
             timer[filePath] = setTimeout(()=>{
                 try {
                     buildFile(filePath,outPath);
+                    if(client){
+                        client.send(outPath,43899,'127.0.0.1');
+                    };
                 } catch (error) {
                     console.log(error);
                     console.log(langObj['failed'][lang],filePath);

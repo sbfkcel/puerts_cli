@@ -145,7 +145,7 @@ namespace Game {
             
             // 添加轮循执行方法，这里的 deltaTime 为 ms
             Ticker.add((deltaTime:number)=>{
-                const r = Vector3.op_Multiply(new Vector3(1,1,0), deltaTime / 100 * speed);
+                const r = Vector3.op_Multiply(new Vector3(1,1,0), deltaTime / 100 * speed * 10);
                 cube.transform.Rotate(r);
             });
         }
