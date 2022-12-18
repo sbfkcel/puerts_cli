@@ -2,10 +2,12 @@ const System:any = CS.System;
 const Puerts:any = CS.Puerts;
 
 // Hot-Reload 支持
-(()=>{
-    // Puerts searchModule 有冲突，先这么注册着
-    puer.registerBuildinModule('stream',require('node:stream'));
-    const CDP = require('chrome-remote-interface');
+((puer:any)=>{
+    // Puerts searchModule 有冲突，先这么注册着（这里模块名称保存在变量上是为了绕开打包工具的依赖检查）
+    const streamName = 'node:stream';
+    puer.registerBuildinModule('stream',require(streamName));
+    const criName = 'chrome-remote-interface';
+    const CDP = require(criName);
     const fs = require('fs');
     const crypto = require('crypto');
     const createHash = str => crypto.createHash('md5').update(str).digest('hex');
@@ -93,7 +95,7 @@ const Puerts:any = CS.Puerts;
         });
     });
     server.bind(43899);
-})();
+})(global.puer);
 
 // SourceMaps 支持
 ((puer:any)=>{

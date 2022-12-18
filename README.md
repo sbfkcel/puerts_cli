@@ -85,10 +85,13 @@ puer build -h
 - 导出 Web 或 微信小游戏工程
     - 确保 UnityEditor 有安装 Unity-WebGL-Support
     - 确保项目已经有安装 `PuertsWebGL`、`微信小游戏转换工具`
+    - 添加需要导出的 Scene
+        - UnityEditor 打开需要导出的场景
+        - UnityEditor菜单 `File` -> `Build Settings` -> `Add Open Scenes`
     - UnityEditor菜单 `微信小游戏` -> `转换小游戏` 在弹出的转换窗口中填写以下信息
         - 游戏appid，[在微信公众平台中申请](https://mp.weixin.qq.com/)
-            - 在这里也可以不设置，后续自己在小游戏工程内进行修改
         - 小游戏项目名称，随便填写
+        - 游戏资源CDN，填写 `http://localhost:10000`（这也是 cli 工具默认的 Web 项目预览地址，CDN资源也就是这里的资源）
         - 导致路径，这里建议与 `puer.config.js` 中的 `minigameOutputDir` 配置项目保持一致
             - `puer.config.js` 文件在执行 `puer init` 时会自动创建，文件默认位置：`项目/TS/puer.config.js`
             - `minigameOutputDir` 默认为 `桌面/项目目录名称/`

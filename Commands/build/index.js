@@ -34,6 +34,7 @@ const build = async(argObj)=>{
     if(param.target && param.target.at(-1) === 'minigame'){
         const miniGameOutDir = config.minigameOutputDir;
         await buildForBrowser(argObj);
+        console.log("---")
         await buildForMinigame(argObj);
         introduceRes(miniGameOutDir);                                                               // 尝试在index.html、game.js中引入编译结果
         if(param.browse && param.browse.at(-1)){                                                    // 有启动预览参数则尝试启用一个静态服务
