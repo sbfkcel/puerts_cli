@@ -4,11 +4,11 @@ import dgram from 'node:dgram';
 import getPathInfo from '../../lib/getPathInfo.js';
 import isTsAndJs from '../../lib/isTsAndJs.js';
 import buildFile from '../../lib/buildFile.js';
-import lang from '../../lib/getLocalLang.js';
 import line from '../../lib/getLine.js';
+import createLang from '../../lib/createLang.js';
 
 const timer = {};
-const langObj = {
+const lang = createLang({
     'failed':{
         cn:'编译失败：',
         en:'Compilation failed'
@@ -17,11 +17,10 @@ const langObj = {
         cn:'已开启 TS 文件监听，现在修改项目文件将自动完成编译',
         en:'The TS file monitoring has been turned on, and now modifying the project file will automatically complete the compilation'
     }
-};
+});
 
 const dev = (argObj)=>{
     const {config,param} = argObj;
-    console.log(argObj);
     const option = {recursive:true};
     const client = param && param.reload && param.reload.at(-1) ? dgram.createSocket("udp4") : null;
     const fun = (eventType, fileName)=>{
@@ -40,13 +39,13 @@ const dev = (argObj)=>{
                     };
                 } catch (error) {
                     console.log(error);
-                    console.log(langObj['failed'][lang],filePath);
+                    console.log(lang('failed'),filePath);
                 };
             },200);
         };
     };
     fs.watch(config.tsProjectSrcDir,option,fun);
-    console.log(`${langObj['tip'][lang]}`);
+    console.log(lang('tip'));
     console.log(line);
 };
 
