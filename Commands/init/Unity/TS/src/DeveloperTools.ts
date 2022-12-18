@@ -3,6 +3,8 @@ const Puerts:any = CS.Puerts;
 
 // Hot-Reload 支持
 (()=>{
+    // Puerts searchModule 有冲突，先这么注册着
+    puer.registerBuildinModule('stream',require('node:stream'));
     const CDP = require('chrome-remote-interface');
     const fs = require('fs');
     const crypto = require('crypto');
