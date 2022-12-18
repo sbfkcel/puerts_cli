@@ -39,7 +39,7 @@ const init = async(argObj)=>{
     };
     const {type} = workObj;
     const tplDir = path.join(__dirname,`${type.slice(0,1).toLocaleUpperCase()}${type.slice(1)}`);
-    const tplFiles = findPath(tplDir,[/^[^\.]/],'file',true,/(^\.)|^(node_modules)$/);
+    const tplFiles = findPath(tplDir,[/^[^\.]/],'file',true,/^\.(?!vscode\b)[^.]+|^node_modules$/); // 除了.vscode之外以.起始的目录、node_modules 都过滤掉
 
     for(let i=0,len=tplFiles.length; i<len; i++){                                                   // 拷贝所有模版文件
         const item = tplFiles[i];

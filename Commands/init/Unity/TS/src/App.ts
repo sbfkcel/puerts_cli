@@ -13,7 +13,7 @@ namespace Game {
         /**是否为线上*/
         online?:boolean
     }
-    interface GameObjectA {
+    interface GameObj {
         object:ue.GameObject,
         components?:{
             camera?:ue.Camera,
@@ -21,17 +21,30 @@ namespace Game {
             canvaslScale?:ue.UI.CanvasScaler,
             graphicRaycaster?:ue.UI.GraphicRaycaster
             eventSystem?:ue.EventSystems.EventSystem,
-            standaloneInputModule?:ue.EventSystems.StandaloneInputModule
+            standaloneInputModule?:ue.EventSystems.StandaloneInputModule,
+            text?:ue.UI.Text,
+            rectTransform?:ue.RectTransform,
+            slider?:ue.UI.Slider
         }
     }
+    interface RandomizeMatrix {
+        position:[number,number,number],
+        scale:[number,number,number],
+        rotaion:[number,number,number]
+    }
     export class App{
-        private _maxFps:number;
+        private _maxFps:number;                                                                     // 最大帧
         private ticker:Ticker;                                                                      // 轮循执行器
-        public static mainCamera:ue.GameObject;
-        public static uiCamera:ue.GameObject;
-        public static uiCanvas:ue.GameObject;
-        public static eventSystem:ue.GameObject;
-        public static stage:ue.GameObject;
+        public static mainCamera:ue.GameObject;                                                     // 主相机
+        public static uiCamera:ue.GameObject;                                                       // Ui相机
+        public static uiCanvas:ue.GameObject;                                                       // Ui画布
+        public static eventSystem:ue.GameObject;                                                    // Ui事件系统
+        public static stage:ue.GameObject;                                                          // 舞台节点
+
+        private cubeList:ue.GameObject[] = [];                                                      // 保存 Cube 列表
+        private cubeCont:number = 100;                                                              // 记录 Cube 数量
+        private speed:number = 1;                                                                   // 记录 Cube 速度
+
         /**
          * 构造方法
          * @param option 游戏启动参数
@@ -70,84 +83,154 @@ namespace Game {
             App.eventSystem = eventSystemObj.object;                                                // 创建UI事件系统
             
             App.stage = new GameObject("Stage");                                                    // 创建舞台，内容全在舞台上
-            
-            // 创建Cube
-            const cube:ue.GameObject = (()=>{
-                const object:ue.GameObject = new GameObject("Cube");
-                object.transform.SetParent(App.stage.transform);
-                const cube_mf:ue.MeshFilter = object.AddComponent($typeof(MeshFilter)) as ue.MeshFilter;
-                cube_mf.mesh = Resources.GetBuiltinResource($typeof(Mesh),"Cube.fbx") as ue.Mesh;
-                const cube_mr:ue.MeshRenderer = object.AddComponent($typeof(MeshRenderer)) as ue.MeshRenderer;
-                const cube_t = Resources.Load("Textures/PuertsLogo") as ue.Texture;
-                cube_mr.material.SetFloat('_Metallic',0.8);
-                cube_mr.material.SetFloat('_Glossiness',0.78);
-                cube_mr.material.SetTexture('_MainTex',cube_t);
-                return object;
-            })();
-            
-            // 创建显示当前速度的组件，并返回文本组件
-            let speed = 0;
-            const textComponent = (()=>{
-                const object:ue.GameObject = new GameObject("Speed");
-                object.transform.SetParent(App.uiCanvas.transform,false);
-                object.AddComponent($typeof(CanvasRenderer));
-                const text:ue.UI.Text = object.AddComponent($typeof(UI.Text)) as ue.UI.Text;
-                text.font = Resources.Load("Fonts/Arial") as ue.Font;
-                text.alignment = TextAnchor.MiddleCenter;
-                text.fontSize = 24;
-                text.fontStyle = FontStyle.Bold;
-                // text.text = `${speed}`;
-                const rectTransform:ue.RectTransform = object.GetComponent($typeof(RectTransform)) as ue.RectTransform;
-                rectTransform.localPosition = new Vector3(0,423,0);
-                rectTransform.anchorMin = new Vector2(0,1);
-                rectTransform.anchorMax = new Vector2(1,1);
-                rectTransform.anchoredPosition = new Vector2(0,0);
-                rectTransform.sizeDelta = new Vector2(0,120);
-                rectTransform.pivot = new Vector2(0.5,1);
-                return text;
-            })();
 
-            // 创建设置速度方法
-            const setSpeed = (val:number) => {
-                speed = val;
-                textComponent.text = `Speed:${val}`;
+            const speedTextObj = this.createUiText('TextSpeed');                                    // 速度文本
+            const countTextObj = this.createUiText('TextCount');                                    // 数量文本
+            countTextObj.components.rectTransform.anchoredPosition = new Vector2(0,-40);            // 调整显示位置稍微向下偏移一点
+
+            const timers = {};                                                                      // 用于保存计时器，防抖之用
+            const updateSpeed = (val:number)=>{                                                     // 更新速度方法
+                this.speed = val;
+                speedTextObj.components.text.text = `Speed:${val.toFixed(3)}`
             };
-            setSpeed(1);
+            updateSpeed(this.speed);                                                                // 速度首次初始化
 
-            // 创建一展灯照在cube脸上
-            (()=>{
-                const object:ue.GameObject = new GameObject("Light");
-                object.transform.SetParent(App.stage.transform);
-                object.transform.position = new Vector3(0,2.51,-2.45);
-                object.transform.rotation = Quaternion.Euler(45,0,0);
-                const light:ue.Light = object.AddComponent($typeof(Light)) as ue.Light;
-                light.type = LightType.Spot;
-                light.range = 6.4;
-                light.spotAngle = 52;
-                // light.lightmapBakeType = LightmapBakeType.Baked;                                 // 仅在 Editor 下有效
-                light.intensity = 20;
-                light.bounceIntensity = 8.5;                                                        // 只有平行光才支持实时反射阴影
-            })();
+            const updateCount = (val:number)=>{                                                     // 更新数量方法
+                val = ~~val;                                                                        // 取整
+                if(val === this.cubeList.length){return;};                                          // 值与当前列表的数量一样则无需处理
+                this.cubeCont = val;                                                                // 记录最新数量
+                countTextObj.components.text.text = `Count:${this.cubeCont}`;                       // 更新提示文字
+                clearTimeout(timers['updateCount']);                                                // 防抖处理
+                timers['updateCount'] = setTimeout(() => {                                          // 防抖处理
+                    this.cubeList = this.createCubeList();
+                }, 200);
+            };
+            updateCount(this.cubeCont);                                                             // 数量首次初始化
 
-            // 创建一个滑动条改变 cube 旋转速度
-            (()=>{
-                const object:ue.GameObject = GameObject.Instantiate(Resources.Load("Prefabs/Slider")) as ue.GameObject;
-                const rectTransform:ue.RectTransform = object.GetComponent($typeof(RectTransform)) as ue.RectTransform;
-                const slider:ue.UI.Slider = object.GetComponent($typeof(Slider)) as ue.UI.Slider;
-                slider.minValue = 1;
-                slider.maxValue = 10;
-                slider.onValueChanged.AddListener(setSpeed);                                        // 为 UI 添加事件绑定
-                rectTransform.transform.localPosition = new Vector3(0,160,0);
-                rectTransform.transform.localScale = new Vector3(2,2,2);
-                rectTransform.sizeDelta = new Vector2(120,20);
-                object.transform.SetParent(App.uiCanvas.transform,false);
-            })();
+            const speedSlideObj = this.createUiSlider('SliderSpeed',updateSpeed);                   // 创建调节速度的Slide
+            speedSlideObj.components.slider.minValue = this.speed;                                  // 最小值为默认初始值
+            speedSlideObj.components.slider.maxValue = this.speed + 100 - this.speed;               // 最大值100
+
+            const countSlideObj = this.createUiSlider('SliderCount',updateCount);                   // 创建调节数量的Slide
+            countSlideObj.components.rectTransform.anchoredPosition = new Vector2(0,80);            // 调整显示位置稍微向下偏移一点
+            countSlideObj.components.slider.minValue = this.cubeCont;                               // 最小值为默认初始值
+            countSlideObj.components.slider.maxValue = this.cubeCont + 3000 - this.cubeCont;        // 最大值3000
             
-            // 添加轮循执行方法，这里的 deltaTime 为 ms
-            Ticker.add((deltaTime:number)=>{
-                const r = Vector3.op_Multiply(new Vector3(1,1,0), deltaTime / 100 * speed * 10);
-                cube.transform.Rotate(r);
-            });
+            const update = (deltaTime:number)=>{                                                    // 更新方法（当热重载开启时，修改该方法即时生效）
+                for(let i=0,len=this.cubeList.length; i<len; i++){
+                    const cube = this.cubeList[i];
+                    const r = Vector3.op_Multiply(new Vector3(1,1,0), deltaTime / 100 * this.speed);
+                    cube.transform.Rotate(r);
+                };
+            };
+            Ticker.add(update);                                                                     // 添加轮循执行方法，这里的 deltaTime 为 ms（实际生产中不建议这么写，update 可以放在对象上也同样能实现热重载）
+        }
+
+        /**
+         * 创建 Text Ui
+         * @param name string 对象名称
+         * @returns GameObj
+         */
+        createUiText(name:string):GameObj{
+            const object:ue.GameObject = new GameObject(name);
+            object.transform.SetParent(App.uiCanvas.transform,false);
+            object.AddComponent($typeof(CanvasRenderer));
+            const text:ue.UI.Text = object.AddComponent($typeof(UI.Text)) as ue.UI.Text;
+            text.font = Resources.Load("Fonts/Arial") as ue.Font;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.fontSize = 24;
+            text.fontStyle = FontStyle.Bold;
+            // text.text = `${speed}`;
+            const rectTransform:ue.RectTransform = object.GetComponent($typeof(RectTransform)) as ue.RectTransform;
+            rectTransform.localPosition = new Vector3(0,423,0);
+            rectTransform.anchorMin = new Vector2(0,1);
+            rectTransform.anchorMax = new Vector2(1,1);
+            rectTransform.anchoredPosition = new Vector2(0,0);
+            rectTransform.sizeDelta = new Vector2(0,120);
+            rectTransform.pivot = new Vector2(0.5,1);
+            return {object,components:{text,rectTransform}};
+        }
+
+        /**
+         * 创建 Slider Ui
+         * @param name string 对象名称
+         * @param call function Ui事件触发方法
+         * @returns GameObj
+         */
+        createUiSlider(name:string,call:ue.Events.UnityAction$1<number>):GameObj{
+            const object:ue.GameObject = GameObject.Instantiate(Resources.Load("Prefabs/Slider")) as ue.GameObject;
+            object.name = name;
+            const rectTransform:ue.RectTransform = object.GetComponent($typeof(RectTransform)) as ue.RectTransform;
+            const slider:ue.UI.Slider = object.GetComponent($typeof(Slider)) as ue.UI.Slider;
+            slider.minValue = 1;
+            slider.maxValue = 10;
+            // slider.wholeNumbers = true;
+            slider.onValueChanged.AddListener(call);                                                  // 为 UI 添加事件绑定
+            rectTransform.transform.localPosition = new Vector3(0,160,0);
+            rectTransform.transform.localScale = new Vector3(2,2,2);
+            rectTransform.sizeDelta = new Vector2(120,20);
+            object.transform.SetParent(App.uiCanvas.transform,false);
+            return {object,components:{slider,rectTransform}};
+        }
+
+        /**
+         * 创建随机矩阵
+         * @returns RandomizeMatrix
+         */
+        createRandomizeMatrix():RandomizeMatrix{
+            const position:RandomizeMatrix['position'] = [
+                Math.random() * 20 - 10,
+                Math.random() * 20 - 10,
+                Math.random() * 20 - 10,
+            ];
+            const scaleVal = Math.random() * 1;
+            const scale:RandomizeMatrix['scale'] = [scaleVal,scaleVal,scaleVal];
+            const rotaion:RandomizeMatrix['rotaion'] = [
+                Math.random() * 90 * Math.PI,
+                Math.random() * 90 * Math.PI,
+                Math.random() * 90 * Math.PI
+            ];
+            return {position,scale,rotaion};
+        }
+
+        /**
+         * 创建Cube列表
+         * @returns ue.GameObject[]
+         */
+        createCubeList():ue.GameObject[]{
+            for(let i=0,len=this.cubeList.length; i<len; i++){                                      // 销毁已有的
+                GameObject.Destroy(this.cubeList[i]);
+                // CS.UnityEngine.Object.DestroyImmediate(this.cubeList[i]);
+            };
+            const result:ue.GameObject[] = [];
+            for(let i=0; i<this.cubeCont; i++){
+                const cube:ue.GameObject = this.createCube(`Cube${i}`);
+                result.push(cube);
+            };
+            return result;
+        }
+
+        /**
+         * 创建Cube
+         * @param name string cube名称
+         * @returns ue.GameObject
+         */
+        createCube(name:string):ue.GameObject{
+            const object:ue.GameObject = new GameObject(name);
+            object.transform.SetParent(App.stage.transform);
+            const cube_mf:ue.MeshFilter = object.AddComponent($typeof(MeshFilter)) as ue.MeshFilter;
+            cube_mf.mesh = Resources.GetBuiltinResource($typeof(Mesh),"Cube.fbx") as ue.Mesh;
+            const cube_mr:ue.MeshRenderer = object.AddComponent($typeof(MeshRenderer)) as ue.MeshRenderer;
+            const cube_t = Resources.Load("Textures/PuertsLogo") as ue.Texture;
+            cube_mr.material.SetFloat('_Metallic',0.8);
+            cube_mr.material.SetFloat('_Glossiness',0.78);
+            cube_mr.material.SetTexture('_MainTex',cube_t);
+            const randomizeMatrix = this.createRandomizeMatrix();
+            object.transform.localPosition = new Vector3(...randomizeMatrix.position);
+            object.transform.localRotation = Quaternion.Euler(...randomizeMatrix.rotaion);
+            // object.transform.localScale = new Vector3(...randomizeMatrix.scale);
+            object.transform.SetParent(App.stage.transform);
+            return object;
         }
 
         set maxFps(val:number){
@@ -156,19 +239,21 @@ namespace Game {
         get maxFps():number{
             return this._maxFps;
         }
+
         /**
          * 创建主相机
          * @returns ue.GameObject
          */
-        createMainCamera():GameObjectA{
+        createMainCamera():GameObj{
             const object:ue.GameObject = new GameObject("Main Camera");
             let camera:ue.Camera = object.AddComponent($typeof(Camera)) as ue.Camera;
             camera.clearFlags = CameraClearFlags.Skybox;
             camera.cullingMask = ~(1 << 5);                                                         // 主相机渲染除UI的所有层（https://gameinstitute.qq.com/community/detail/126782）
             camera.nearClipPlane = 2;
+            camera.farClipPlane = 40;
             camera.transform.Rotate(20,0,0);
             camera.transform.localScale = new Vector3(0.5,0.5,0.5);
-            camera.transform.localPosition = new Vector3(0,1.4,-5);
+            camera.transform.localPosition = new Vector3(0,7,-20);
             return {object,components:{camera}};
         }
 
@@ -176,7 +261,7 @@ namespace Game {
          * 创建UI相机
          * @returns object
          */
-        createUiCamera():GameObjectA{
+        createUiCamera():GameObj{
             const object:ue.GameObject = new GameObject("Ui Camera");
             object.transform.position = new Vector3(-10,0,0);
             const camera:ue.Camera = object.AddComponent($typeof(Camera)) as ue.Camera;
@@ -191,7 +276,7 @@ namespace Game {
         /**
          * 创建Ui画布
          */
-        createCanas(cameraComponent:ue.Camera):GameObjectA{
+        createCanas(cameraComponent:ue.Camera):GameObj{
             const object:ue.GameObject = new GameObject("Canvas");
             object.layer = 5;                                                                       // 设置属于UI层
             const canvas:ue.Canvas = object.AddComponent($typeof(Canvas)) as ue.Canvas;
@@ -210,7 +295,7 @@ namespace Game {
          * 创建UI事件系统
          * @returns object
          */
-        createEventSystem():GameObjectA{
+        createEventSystem():GameObj{
             const object:ue.GameObject = new GameObject("EventSystem");
             const eventSystem = object.AddComponent($typeof(EventSystems.EventSystem)) as ue.EventSystems.EventSystem;
             const standaloneInputModule = object.AddComponent($typeof(EventSystems.StandaloneInputModule)) as ue.EventSystems.StandaloneInputModule;
@@ -219,7 +304,7 @@ namespace Game {
     }
 }
 (()=>{
-    const app = new Game.App({maxFps:30,online:false});
+    const app = new Game.App({maxFps:60,online:false});
     app.init();
 })()
 export default Game.App;

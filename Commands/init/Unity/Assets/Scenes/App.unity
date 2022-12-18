@@ -168,6 +168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entry: App.js
-  sourceMap: SourceMap.js
+  developerTools: DeveloperTools.js
   debugPort: 43990
   debug: 0
