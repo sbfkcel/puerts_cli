@@ -1,24 +1,22 @@
-let lastTime = +new Date;
-/**
+if (!Date.now)
+    Date.now = function() { return new Date().getTime(); };/**
  * 类似浏览器中的 requestAnimationFrame
  * @param callback 
  * @param fps 
  * @returns 
  */
 export const requestAnimationFrame = (callback:Function,fps:number):NodeJS.Timeout=>{
-    const currentTime:number = +new Date();
-    const timeToCall:number = Math.max(0,fps-(currentTime - lastTime));
-    const id:NodeJS.Timeout = setTimeout(()=>{
-        callback(timeToCall);
-    },timeToCall);
-    lastTime = currentTime + timeToCall;
-    return id;
+    var lastTime = 0;
+    var now = Date.now();
+            var nextTime = Math.max(lastTime + (1000 / fps), now);
+            return setTimeout(function() { callback(lastTime = nextTime); },
+                              nextTime - now);
 };
 
 /**
  * 类似浏览器中的 cancelAnimationFrame
- * @param id 
+ * @param time 
  */
-export const cancelAnimationFrame = (id:NodeJS.Timeout):void=>{
-    clearTimeout(id);
+export const cancelAnimationFrame = (time:NodeJS.Timeout):void=>{
+    clearTimeout(time);
 };

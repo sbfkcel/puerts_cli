@@ -49,7 +49,7 @@ puer build -h
     - 解压并将 `Puerts` 目录复制到项目的 `Assets/` 目录下，即：`Assets/Puerts/`
     - 注意：由于 `Puerts` 支持多系统多平台，需要手动指定好哪些文件适用于哪些平台，否则可能运行或编译出现异常，具体操作方法如下：
         - UnityEditor的资源管理器中找到: `Assets` -> `Puerts` -> `Plugins` -> `xx系统` -> `xx` 直到具体的文件，选中目录下所有文件
-        - 然后在 `Inspector` 面板勾选对上的平台并点击 `Apply` 按钮（如果不知道则全都不选就好，之后等需要编译对应平台的时候再来这里设置）
+        - 然后在 `Inspector` 面板勾选对上的平台并点击 `Apply` 按钮（至少保证当前 Editor 环境有选择对，其它如果不知道则全都不选就好，之后等需要编译对应平台的时候再来这里设置）
         - 设置完之后，建议关掉 UnityEditor 重开一次
     - [下载 PuertsWebGL](https://github.com/zombieyang/puerts_unity_webgl_demo/tags) 并解压
     - 在解压目录内找到 `package` 目录并重命名为 `PuertsWebGL`
