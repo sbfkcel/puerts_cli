@@ -1,4 +1,4 @@
-# Puerts Cli
+# <img src="./logo.svg"/>
 
 开箱即用的 PuerTS 脚手架工具，通过本工具可以将 Puerts 快速接入并应用于项目中。
 
