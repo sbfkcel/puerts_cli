@@ -59,11 +59,11 @@
 				}
 				h1 span {
 					text-shadow:
-						0 1px 0 #efefef,
-						0 2px 0 #efefef,
-						0 3px 0 #efefef,
-						0 4px 0 #efefef,
-						0 12px 5px rgba(0, 0, 0, 0.1);
+						0 1px 0 #eee,
+						0 2px 0 #eee,
+						0 3px 0 #eee,
+						0 4px 0 #eee,
+						0 12px 5px rgba(0, 0, 0, 0.2);
 				}
                 .icon {
                     width:1em;
