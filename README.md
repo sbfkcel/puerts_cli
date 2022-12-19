@@ -12,6 +12,7 @@
 
 > 现阶段仅支持 Unity 项目
 
+
 ## 安装
 
 确保本地已经安装 [Node.js 16.15.0+](https://nodejs.org/en/)
@@ -78,6 +79,7 @@ puer build -h
 - 进入开发模式
     - 终端进入到创建好的 `Unity项目` 目录中
     - 终端执行 `puer dev`，此时工具会监听项目中的 `TS` 文件是否有修改，如有修改则会实时将其编译为 `JS` 文件
+    - 默认会启动热重载支持，如果不需要可手动关闭
 
 
 ## 编译为Web或微信小游戏工程
@@ -107,9 +109,21 @@ puer build -h
 
 > 建议：微信小程序、小游戏技术生态都是基于Web之上的，所以要先保证浏览器上可正常运行，之后再打开小游戏工程来预览调试
 
+## 如何断点调试
+
+- 启动调试模式
+    - UnityEditor 打开 `Assets/Screnes/App.unity` 场景
+    - UnityEditor Hierarchy 场景找到 `Main` 节点，勾选 `Inspector` 面板中的 `Debug` 选项
+    - 播放场景（此时 UnityEditor 处于卡死等待状态）
+- Vscode 连接调试服务
+    - Vscode 打开该 Unity 项目工程，并在对应的代码中标记好断点位置
+    - Vscode 左侧 Side 栏点击 `运行和调试` -> `启动调试（Puerts 字样前小三角图标）`
+
+
 ## 参与开发
 
 参与改进本工具或二次开发本请阅读 [Developer Guide](./DEVELOP.md)。
+
 
 ## 补充说明
 
@@ -121,9 +135,11 @@ puer build -h
 - 不建议直接使用引擎自带资源，例如：`Shader.Find("Particles/Standard Unlit")`
 - 引入相对模块请以 `./`、`../` 开头，否则编译器可能无法找到模块
 
+
 ## 项目发起者
 
 Tencent [@zombieyang](https://github.com/zombieyang)、4399 Game [@sbfkcel](https://github.com/sbfkcel)
+
 
 ## 相关项目及资料
 
