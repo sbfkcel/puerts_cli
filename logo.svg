@@ -51,7 +51,7 @@
 				}
 
 				h1 {
-					font-size: 100px;
+					font-size: 90px;
 					line-height: 1;
 					letter-spacing: 5px;
 					text-transform: uppercase;
