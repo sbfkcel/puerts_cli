@@ -85,8 +85,9 @@ puer build -h
 - 导出 Web 或 微信小游戏工程
     - 确保 UnityEditor 有安装 Unity-WebGL-Support
     - 确保项目已经有安装 `PuertsWebGL`、`微信小游戏转换工具`
-    - 添加需要导出的 Scene
+    - 切换编译平台为 WebGL，并确保添加需要导出的 Scene
         - UnityEditor 打开需要导出的场景
+        - UnityEditor菜单 `File` -> `Build Settings` -> `WebGL` -> `Switch Platform`
         - UnityEditor菜单 `File` -> `Build Settings` -> `Add Open Scenes`
     - UnityEditor菜单 `微信小游戏` -> `转换小游戏` 在弹出的转换窗口中填写以下信息
         - 游戏appid，[在微信公众平台中申请](https://mp.weixin.qq.com/)
