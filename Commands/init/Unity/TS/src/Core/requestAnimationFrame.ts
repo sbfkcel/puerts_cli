@@ -1,16 +1,24 @@
-if (!Date.now)
-    Date.now = function() { return new Date().getTime(); };/**
+let lastTime;
+/**
  * 类似浏览器中的 requestAnimationFrame
- * @param callback 
- * @param fps 
+ * @param callback function 执行方法
+ * @param intervalTime number 间隔时间
  * @returns 
  */
-export const requestAnimationFrame = (callback:Function,fps:number):NodeJS.Timeout=>{
-    var lastTime = 0;
-    var now = Date.now();
-            var nextTime = Math.max(lastTime + (1000 / fps), now);
-            return setTimeout(function() { callback(lastTime = nextTime); },
-                              nextTime - now);
+export const requestAnimationFrame = (callback:Function,intervalTime:number):NodeJS.Timeout=>{
+    lastTime = lastTime || +new Date;
+    const currentTime:number = +new Date;
+    const timeCouse:number = currentTime - lastTime;
+    const timeToCall = (()=>{
+        let result:number = intervalTime-timeCouse;
+        result = result < 0 ? intervalTime - result : intervalTime;
+        return result;
+    })();
+    const time:NodeJS.Timeout = setTimeout(()=>{
+        callback(timeToCall);
+    },timeToCall);
+    lastTime = currentTime + timeToCall;
+    return time;
 };
 
 /**
