@@ -53,11 +53,20 @@
 					font-size: 100px;
 					line-height: 1;
 					letter-spacing: 5px;
+					text-transform: uppercase;
 					animation: rotate ease-in-out 1s infinite alternate;
+				}
+				h1 span {
+					text-shadow:
+						0 1px 0 #efefef,
+						0 2px 0 #efefef,
+						0 3px 0 #efefef,
+						0 4px 0 #efefef,
+						0 12px 5px rgba(0, 0, 0, 0.1);
 				}
 			</style>
 			<div class="container">
-				<h1>Puerts Cli 🪜</h1>
+				<h1><span>Puerts Cli</span> 🪜</h1>
 			</div>
 		</div>
 	</foreignObject>
