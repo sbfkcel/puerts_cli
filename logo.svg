@@ -59,10 +59,10 @@
 				}
 				h1 span {
 					text-shadow:
-						0 1px 0 #eee,
-						0 2px 0 #eee,
-						0 3px 0 #eee,
-						0 4px 0 #eee,
+						0 1px 0 #ddd,
+						0 2px 0 #ddd,
+						0 3px 0 #ddd,
+						0 4px 0 #ddd,
 						0 12px 5px rgba(0, 0, 0, 0.2);
 				}
                 .icon {
