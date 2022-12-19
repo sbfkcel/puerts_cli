@@ -113,7 +113,7 @@ puer build -h
 
 - 启动调试模式
     - UnityEditor 打开 `Assets/Screnes/App.unity` 场景
-    - UnityEditor -> `Hierarchy面板` -> 找到 `Main` 节点，勾选 `Inspector` 面板中的 `Debug` 选项
+    - UnityEditor 在 `Hierarchy面板` -> 找到 `Main` 节点，勾选 `Inspector` 面板中的 `Debug` 选项
     - 播放场景（此时 UnityEditor 处于卡死等待状态）
 - Vscode 连接调试服务
     - Vscode 打开该 `Unity项目工程`，并在对应的代码中标记好断点位置
