@@ -6,7 +6,7 @@
 
 - 克隆本项目 `git clone git@github.com:sbfkcel/puerts_cli.git`
 - 拉取依赖
-    - 终端运行 `cd PuertsCli`
+    - 终端运行 `cd puerts_cli`
     - 终端运行 `npm install`
 - 挂载全环境变量
     - 终端运行 `npm link`
