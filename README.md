@@ -46,7 +46,7 @@ puer build -h
 
 - 使用 `Unity 2021+ LTS` 创建一个空项目
 - 在项目中添加 `Puerts`
-    - [下载 Puerts](https://github.com/Tencent/puerts/tags)
+    - [下载 Puerts](https://github.com/Tencent/puerts/tags)（建议下载 PuerTS_Nodejs_xxx.tgz 版本，因为开发阶段的 Sourcemap、Hotreload 要用到 Node 的环境）
     - 解压并将 `Puerts` 目录复制到项目的 `Assets/` 目录下，即：`Assets/Puerts/`
     - 注意：由于 `Puerts` 支持多系统多平台，需要手动指定好哪些文件适用于哪些平台，否则可能运行或编译出现异常，具体操作方法如下：
         - UnityEditor的资源管理器中找到: `Assets` -> `Puerts` -> `Plugins` -> `xx系统` -> `xx` 直到具体的文件，选中目录下所有文件
