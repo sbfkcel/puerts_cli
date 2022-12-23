@@ -47,7 +47,7 @@ puer build -h
 
 ## 新手教程
 
-- 使用 `Unity 2021+ LTS` 创建一个空项目
+- 使用 `Unity 2021+ LTS` 创建一个3D空项目
 - 在项目中添加 `Puerts`
     - [下载 Puerts](https://github.com/Tencent/puerts/tags)（建议下载 PuerTS_Nodejs_xxx.tgz 版本，因为开发阶段的 Sourcemap、Hotreload 要用到 Node 的环境）
     - 解压并将 `Puerts` 目录复制到项目的 `Assets/` 目录下，即：`Assets/Puerts/`
