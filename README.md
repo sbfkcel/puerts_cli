@@ -28,6 +28,9 @@ yarn global add @puerts/cli
 puer -v
 ```
 
+> 注意：以下所有 `puer` 命令都建议以管员身份运行
+
+
 ## 帮助手册
 
 Puerts Cli 自带帮助手册，通过添加 `--help` 参数来查看每个命令及相关参数的帮助说明。
