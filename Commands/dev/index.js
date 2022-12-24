@@ -6,6 +6,7 @@ import isTsAndJs from '../../lib/isTsAndJs.js';
 import buildFile from '../../lib/buildFile.js';
 import line from '../../lib/getLine.js';
 import createLang from '../../lib/createLang.js';
+import createDebugers from '../../lib/createDebugers.js';
 
 const timer = {};
 const lang = createLang({
@@ -22,7 +23,7 @@ const lang = createLang({
 const dev = (argObj)=>{
     const {config,param} = argObj;
     const option = {recursive:true};
-    const client = param && param.reload && param.reload.at(-1) ? dgram.createSocket("udp4") : null;
+    const debugers = createDebugers(param.reload);
     const fun = (eventType, fileName)=>{
         const filePath = path.join(config.tsProjectSrcDir,fileName),
             filePathInfo = getPathInfo(filePath);
@@ -34,9 +35,16 @@ const dev = (argObj)=>{
             timer[filePath] = setTimeout(()=>{
                 try {
                     buildFile(filePath,outPath);
-                    if(client){
-                        client.send(outPath,43899,'127.0.0.1');
-                    };
+                    debugers.forEach(async(item)=>{
+                        try {
+                            if(!item.client){
+                                await item.init();
+                            };
+                            item.update(outPath);
+                        } catch (error) {
+                            console.log(error);
+                        };
+                    });
                 } catch (error) {
                     console.log(error);
                     console.log(lang('failed'),filePath);

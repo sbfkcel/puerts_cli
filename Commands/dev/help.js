@@ -6,25 +6,20 @@ const config = {
     params:{
         '-r,--reload':{
             des:{
-                cn:'是否开启热重载，默认：true',
-                en:'Whether to enable hot reloading, default: true'
+                cn:'热重载端服务端口号（即虚拟机调试端口号），多个可分开传入，默认：43990',
+                en:'The service port number of the hot reload side (that is, the virtual machine debugging port number), multiple can be passed in separately, default: 43990'
             },
-            default: true,
+            default: 43990,
             check: val => {                                                                         // 检查参数，如果检查到错误要返回一个对象（包含：cn、en）
-                if(typeof val !== 'boolean'){
+                if(typeof val !== 'number' || isNaN(val) || val < 1 || val > 65535){
                     return {
-                        cn:'--reload 传入的值必须为 true、flase',
-                        en:'The value passed in by --reload must be true or false'
+                        cn:'--reload 传入的值必须为一个可用的有效端口号，默认：43990',
+                        en:'--reload The value passed in must be a valid port number that is available, default:43990'
                     }
                 };
             },
             format: val => {
-                if(/^true|1$/i.test(val)){
-                    return true;
-                };
-                if(/^false|0$/i.test(val)){
-                    return false;
-                };
+                return +val;
             }
         },
         '-h,--help':{

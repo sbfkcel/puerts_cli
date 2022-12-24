@@ -13,7 +13,7 @@ namespace Game {
         public string developerTools = "DeveloperTools.js";                                         // SourceMap 处理文件
 
         [Tooltip("断点调试端口，需要开启 debug 选项")]
-        public int debugPort = 43990;                                                               // 调试端口号
+        public int debugPort = 43990;                                                               // 调试端口号（如果调试端口不是`43990`，又要实现热重载，需在脚手架运行时指定重载端口号。例如：`puer dev --reload 调试端口号`）
         
         [Tooltip("开启调试模式后，每次游戏启动时会阻塞等待调试连接才会向下运行")]
         public bool debug = false;                                                                  // 是否开启调试

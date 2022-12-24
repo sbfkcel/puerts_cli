@@ -123,6 +123,15 @@ puer build -h
     - Vscode 点击左侧 `Side栏` -> `运行和调试` -> `启动调试（Puerts 字样前小三角图标）`
 
 
+## 如何支持热重载
+
+如果项目中初始化的 puerts 虚拟机调试端口为 `43990`，运行 `puer dev` 则会自动启动热重载模块。
+
+如果更换了其它调试端口，需要使用 `--reload` 参数来指定虚拟机调试端口号，例如：`puer dev --reload 调试端口号`。
+
+当存在多个虚拟机的一样通过 `--reload` 来分别指定即可，例如：`puer dev --reload 调试端口号1 --reload 调试端口号2`。
+
+
 ## 参与开发
 
 参与改进本工具或二次开发本请阅读 [Developer Guide](./DEVELOP.md)。
