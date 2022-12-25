@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import dgram from 'node:dgram';
 import getPathInfo from '../../lib/getPathInfo.js';
 import isTsAndJs from '../../lib/isTsAndJs.js';
 import buildFile from '../../lib/buildFile.js';
 import line from '../../lib/getLine.js';
 import createLang from '../../lib/createLang.js';
 import createDebugers from '../../lib/createDebugers.js';
+import findPath from '../../lib/findPath.js';
 
 const timer = {};
 const lang = createLang({
@@ -20,10 +20,29 @@ const lang = createLang({
     }
 });
 
-const dev = (argObj)=>{
-    const {config,param} = argObj;
+const getDebugers = async (workPath)=>{
+    const vmDebugPortsPath = findPath(workPath,[/^\.puertsVmDebugPorts\.txt$/],'file',false);
+    if(vmDebugPortsPath === undefined){
+        return;
+    };
+    const vmDebugPortsPathInfo = getPathInfo(vmDebugPortsPath);
+    if(vmDebugPortsPathInfo.type === 'file'){
+        const vmDebugPortsArr = (()=>{
+            const result = [];
+            const str = fs.readFileSync(vmDebugPortsPath,'utf-8');
+            str.split(',').forEach(item => {
+                result.push(+item);
+            });
+            return result;
+        })();
+        return await createDebugers(vmDebugPortsArr);
+    };
+};
+
+const dev = async(argObj)=>{
+    const {config,param,workObj} = argObj;
+    let debugers = await getDebugers(workObj.path);
     const option = {recursive:true};
-    const debugers = createDebugers(param.reload);
     const fun = (eventType, fileName)=>{
         const filePath = path.join(config.tsProjectSrcDir,fileName),
             filePathInfo = getPathInfo(filePath);
@@ -32,19 +51,24 @@ const dev = (argObj)=>{
                 .replace(config.tsProjectSrcDir,config.tsOutputDir)
                 .replace(/\.(jsx|js|ts)$/,'.js');
             clearTimeout(timer[filePath]);
-            timer[filePath] = setTimeout(()=>{
+            timer[filePath] = setTimeout(async()=>{
                 try {
                     buildFile(filePath,outPath);
-                    debugers.forEach(async(item)=>{
-                        try {
-                            if(!item.client){
-                                await item.init();
+                    if(debugers === undefined || debugers.size === 0){
+                        debugers = await getDebugers(workObj.path);
+                    };
+                    if(debugers){
+                        debugers.forEach(async(item)=>{
+                            try {
+                                if(!item.client){
+                                    await item.init();
+                                };
+                                item.update(outPath);
+                            } catch (error) {
+                                console.log(error);
                             };
-                            item.update(outPath);
-                        } catch (error) {
-                            console.log(error);
-                        };
-                    });
+                        });
+                    };
                 } catch (error) {
                     console.log(error);
                     console.log(lang('failed'),filePath);

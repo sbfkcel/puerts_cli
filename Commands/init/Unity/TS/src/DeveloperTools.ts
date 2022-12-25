@@ -1,5 +1,29 @@
 const System:any = CS.System;
 const Puerts:any = CS.Puerts;
+const UnityEngine:any = CS.UnityEngine;
+
+// HotReload 端口号存储
+((puer:any)=>{
+    const jsEnvs:any = Puerts.JsEnv.jsEnvs;
+    const debugPorts = (()=>{
+        let result = '';
+        for(let i=0,len=jsEnvs.Count; i<len; i++){
+            const item = jsEnvs.get_Item(i);
+            if(item && item.debugPort !== -1){
+                result += `${item.debugPort},`;
+            };
+        };
+        if(result.length){
+            result = result.slice(0,-1);
+        };
+        return result;
+    })();
+    const path = System.IO.Path.Combine(UnityEngine.Application.dataPath,'.puertsVmDebugPorts.txt');
+    const sw = new System.IO.StreamWriter(path);
+    sw.Write(debugPorts);
+    sw.Flush();
+    sw.Close();
+})(global.puer);
 
 // SourceMaps 支持
 ((puer:any)=>{
