@@ -41,6 +41,7 @@ namespace Game {
                 #endif
                 vm.UsingAction<bool>();                                                             // 处理事件要用到（有多少类型添加多少个）
                 vm.UsingAction<float>();                                                            // 处理事件要用到（有多少类型添加多少个）
+                vm.UsingAction<float,float>();                                                      // 处理事件要用到（有多少类型添加多少个）
             };
             if(debug){                                                                              // 启用调试
                 vm.WaitDebugger();

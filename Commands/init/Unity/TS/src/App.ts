@@ -114,9 +114,9 @@ namespace Game {
             const countSlideObj = this.createUiSlider('SliderCount',updateCount);                   // 创建调节数量的Slide
             countSlideObj.components.rectTransform.anchoredPosition = new Vector2(0,80);            // 调整显示位置稍微向下偏移一点
             countSlideObj.components.slider.minValue = this.cubeCont;                               // 最小值为默认初始值
-            countSlideObj.components.slider.maxValue = this.cubeCont + 3000 - this.cubeCont;        // 最大值3000
+            countSlideObj.components.slider.maxValue = this.cubeCont + 20000 - this.cubeCont;       // 最大值3000
             
-            const update = (deltaTime:number)=>{                                                    // 更新方法（当热重载开启时，修改该方法即时生效）
+            const update = (deltaTime:number,performance:number)=>{                                 // 更新方法（当热重载开启时，修改该方法即时生效）
                 for(let i=0,len=this.cubeList.length; i<len; i++){
                     const cube = this.cubeList[i];
                     const r = Vector3.op_Multiply(new Vector3(1,1,0), deltaTime / 100 * this.speed);

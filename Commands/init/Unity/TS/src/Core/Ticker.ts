@@ -5,7 +5,7 @@ namespace Game {
      * 轮循环执行器
      */
     export class Ticker {
-        private time:NodeJS.Timeout;
+        private time:NodeJS.Timeout|number;
         private _maxFps:number;
         private maxIntervalTime:number;
         private isPlay = true;
@@ -29,13 +29,15 @@ namespace Game {
             this.isPlay = false;
             cancelAnimationFrame(this.time);
         }
-        loop(deltaTime:number){
+        loop(deltaTime:number,performance:number){
             if(!this.isPlay){
                 return;
             };
-            for(let i=0,len=Ticker.tasks.length; i<len; i++){
-                const run:Function = Ticker.tasks[i];
-                run(deltaTime);
+            if(deltaTime){
+                for(let i=0,len=Ticker.tasks.length; i<len; i++){
+                    const run:Function = Ticker.tasks[i];
+                    run(deltaTime,performance);
+                };
             };
             if(Ticker.tempTasks){                                                                   // 本轮执行完成，如果有新任，则将临时队列替换为要正式执行的任务
                 Ticker.tasks = Ticker.tempTasks;

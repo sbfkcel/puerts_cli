@@ -1,30 +1,32 @@
-let lastTime;
-/**
- * 类似浏览器中的 requestAnimationFrame
- * @param callback function 执行方法
- * @param intervalTime number 间隔时间
- * @returns 
- */
-export const requestAnimationFrame = (callback:Function,intervalTime:number):NodeJS.Timeout=>{
-    lastTime = lastTime || +new Date;
-    const currentTime:number = +new Date;
-    const timeCouse:number = currentTime - lastTime;
-    const timeToCall = (()=>{
-        let result:number = intervalTime-timeCouse;
-        result = result < 0 ? intervalTime - result : intervalTime;
-        return result;
-    })();
-    const time:NodeJS.Timeout = setTimeout(()=>{
-        callback(timeToCall);
-    },timeToCall);
-    lastTime = currentTime + timeToCall;
-    return time;
+interface AnimationFrame {
+    requestAnimationFrame?:Function,
+    cancelAnimationFrame?:Function,
+    setTimeout?:Function,
+    clearTimeout?:Function
 };
 
-/**
- * 类似浏览器中的 cancelAnimationFrame
- * @param time 
- */
-export const cancelAnimationFrame = (time:NodeJS.Timeout):void=>{
-    clearTimeout(time);
+const obj:AnimationFrame = globalThis || window || {};
+const _requestAnimationFrame = obj.requestAnimationFrame || obj.setTimeout;
+const _cancelAnimationFrame =  obj.cancelAnimationFrame || obj.clearTimeout;
+
+let lastTime:number;
+const customRequestAnimationFrame = (callback:Function,intervalTime:number):number=>{
+    const fun = ()=>{
+        const currentTime:number = performance.now();                                               // 当前时间
+        lastTime = lastTime || currentTime;                                                         // 防止首次执行无历史时间
+        const timeCouse:number = currentTime - lastTime;                                            // 距离上一帧时间
+        const isNext:boolean = intervalTime-timeCouse <= 0 || timeCouse === 0;                      // 判断是否执行下一帧
+        if(isNext){
+            lastTime = currentTime;
+            callback(timeCouse,currentTime);
+        }else{
+            callback();
+        };
+    };
+    return _requestAnimationFrame(fun);
 };
+const customCancelAnimationFrame = timer => {
+    _cancelAnimationFrame(timer);
+};
+export const requestAnimationFrame = customRequestAnimationFrame;
+export const cancelAnimationFrame = customCancelAnimationFrame;
