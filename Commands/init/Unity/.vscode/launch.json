@@ -9,6 +9,12 @@
             "type": "node",
             "request": "attach",
             "port": 43990
+        },
+        {
+            "name": "UnityEditor",
+            "type": "unity",
+            "path": "${workspaceFolder}/Library/EditorInstance.json",
+            "request": "launch"
         }
     ]
 }
