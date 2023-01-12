@@ -41,7 +41,7 @@ const getDebugers = async (workPath)=>{
 
 const dev = async(argObj)=>{
     const {config,param,workObj} = argObj;
-    let debugers = await getDebugers(workObj.path);
+    let debugers = param.reload.at(-1) ? await getDebugers(workObj.path) : null;
     const option = {recursive:true};
     const fun = (eventType, fileName)=>{
         const filePath = path.join(config.tsProjectSrcDir,fileName),
