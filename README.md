@@ -28,7 +28,7 @@ yarn global add @puerts/cli
 puer -v
 ```
 
-> 注意：以下所有 `puer` 命令都建议以管员身份运行
+> 注意：以下所有 `puer` 命令都建议以管理员身份运行
 
 
 ## 帮助手册
@@ -98,7 +98,7 @@ puer build -h
         - 游戏appid，[在微信公众平台中申请](https://mp.weixin.qq.com/)
         - 小游戏项目名称，随便填写
         - 游戏资源CDN，填写 `http://localhost:10000`（这也是 cli 工具默认的 Web 项目预览地址，CDN资源也就是这里的资源）
-        - 导致路径，这里建议与 `puer.config.js` 中的 `minigameOutputDir` 配置项目保持一致
+        - 导出路径，这里建议与 `puer.config.js` 中的 `minigameOutputDir` 配置项目保持一致
             - `puer.config.js` 文件在执行 `puer init` 时会自动创建，文件默认位置：`项目/TS/puer.config.js`
             - `minigameOutputDir` 默认为 `桌面/项目目录名称/`
         - 点击 `导出WEBGL并转换为小游戏（常用按钮）` 导出项目
@@ -122,6 +122,7 @@ puer build -h
     - Vscode 打开该 `Unity项目工程`，并在对应的代码中标记好断点位置
     - Vscode 点击左侧 `Side栏` -> `运行和调试` -> `启动调试（Puerts 字样前小三角图标）`
 
+> Vscode 需要安装 `Debugger for Unity` 扩展
 
 ## 参与开发
 
