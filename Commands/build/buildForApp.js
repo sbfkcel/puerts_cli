@@ -33,7 +33,7 @@ const buildForApp = (argObj)=>{
     const {param,config,workObj,cwd} = argObj;
     const srcDir = config.tsProjectSrcDir;
     const outDir = config.tsOutputDir;
-    if(param['clear']){                                                                             // 清理输出目录并保证相关软链有效
+    if(param.clear.at(-1)){                                                                             // 清理输出目录并保证相关软链有效
         fs.emptyDirSync(outDir);
         fs.createSymlinkSync(
             path.join(config.tsProjectDir,'package.json'),

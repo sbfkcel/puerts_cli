@@ -41,9 +41,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
         console.log(param);
         return;
     };
-    
-    if(param['help']){                                                                              // 输出命令帮助
-        console.log(param['help']);
+    if(param.help){                                                                              // 输出命令帮助
+        console.log(param.help);
         return;
     };
 

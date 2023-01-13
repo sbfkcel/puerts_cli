@@ -20,7 +20,7 @@ const lang = createLang({
 });
 const build = async(argObj)=>{
     const {param,config} = argObj;
-    if(param['clear']){                                                                             // 移除当前依赖并重新拉取依赖
+    if(param.clear.at(-1)){
         const nodeModulesPath = path.join(config.tsProjectDir,'node_modules');
         fs.removeSync(nodeModulesPath);
         try {                                                                                       // 尝试安装依赖并创建 node_modules 目录软链
