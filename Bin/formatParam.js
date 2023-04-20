@@ -99,6 +99,9 @@ const formatParam = async (command,params)=>{
             };
         };
         const handleVal = item => {                                                                 // 处理值方法
+            if(param === undefined){                                                                // 没有参数则说明参选传入异常
+                return `'${item}' ${lang('invalidParam')}\n\n${helpString}`;
+            };
             const val = typeof param.format === 'function' ? param.format(item) : item;
             const checkVal = typeof param.check === 'function' ? param.check(val) : null;
             if(checkVal){

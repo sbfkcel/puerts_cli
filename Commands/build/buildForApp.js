@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import getFilesPath from '../../lib/getFilesPath.js';
+import getPathInfo from '../../lib/getPathInfo.js';
 import isTsAndJs from '../../lib/isTsAndJs.js';
 import buildFile from '../../lib/buildFile.js';
 import line from '../../lib/getLine.js';
@@ -33,15 +34,23 @@ const buildForApp = (argObj)=>{
     const {param,config,workObj,cwd} = argObj;
     const srcDir = config.tsProjectSrcDir;
     const outDir = config.tsOutputDir;
-    if(param.clear.at(-1)){                                                                             // 清理输出目录并保证相关软链有效
+    if(param.clear.at(-1)){                                                                         // 清理输出目录
         fs.emptyDirSync(outDir);
+    };
+    const packageLinkPath = path.join(outDir,'package.json');
+    const packageLinkPathInfo = getPathInfo(packageLinkPath);
+    const nodeModulesPath = path.join(outDir,'node_modules');
+    const nodeModulesPathInfo = getPathInfo(nodeModulesPath);
+    if(!packageLinkPathInfo.isExist){                                                               // 保证软链存在
         fs.createSymlinkSync(
             path.join(config.tsProjectDir,'package.json'),
-            path.join(outDir,'package.json')
+            packageLinkPath
         );
+    };
+    if(!nodeModulesPathInfo.isExist){                                                               // 保证软链存在
         fs.createSymlinkSync(
             path.join(config.tsProjectDir,'node_modules'),
-            path.join(outDir,'node_modules')
+            nodeModulesPath
         );
     };
     const buildOptions = (()=>{

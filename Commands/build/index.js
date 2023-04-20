@@ -25,7 +25,7 @@ const build = async(argObj)=>{
         fs.removeSync(nodeModulesPath);
         try {                                                                                       // 尝试安装依赖并创建 node_modules 目录软链
             console.log(lang('install'));
-            fs.emptyDirSync(path.join(config.tsProjectDir,'node_modules'));                         // 保证目录是存在的
+            fs.ensureDirSync(path.join(config.tsProjectDir,'node_modules'));                        // 保证目录是存在的
             spawnSync('npm',['install'],{cwd:config.tsProjectDir,shell:true});
         } catch (error) {
             console.log(lang('installFailed'));
